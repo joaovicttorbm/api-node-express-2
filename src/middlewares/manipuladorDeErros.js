@@ -6,14 +6,19 @@ import RequisicaoIncorreta from "../erros/RequisicaoIncorreta.js";
 
 // eslint-disable-next-line no-unused-vars
 function manipuladorDeErros (erro, req, res, next) {
-  if (erro instanceof mongoose.Error.CastError) {
-    new RequisicaoIncorreta().enviarResposta(res);
-  } else if (erro instanceof mongoose.Error.ValidationError) {
-    new ErroValidacao(erro).enviarResposta(res);
-  } else if (erro instanceof NaoEncontrado) {
-    erro.enviarResposta(res);
-  } else {
-    new ErroBase().enviarResposta(res);
+  switch (true) {
+    case erro instanceof mongoose.Error.CastError:
+      new RequisicaoIncorreta().enviarResposta(res);
+      break;
+    case erro instanceof mongoose.Error.ValidationError:
+      new ErroValidacao(erro).enviarResposta(res);
+      break;
+    case erro instanceof NaoEncontrado:
+      erro.enviarResposta(res);
+      break;
+    default:
+      new ErroBase().enviarResposta(res);
+      break;
   }
 }
 
